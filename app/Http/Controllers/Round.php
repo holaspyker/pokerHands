@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Hands;
-use App\PossibleResult;
-use Illuminate\Http\Request;
 
 class Round extends Controller
 {
@@ -17,15 +15,16 @@ class Round extends Controller
      */
     public function __construct($round)
     {
-        foreach ($round as $play) {
+        foreach ($round as $hand) {
             $h = [];
             for ($i = 0; $i < Hands::NUMBERCARDS; $i++) {
                 $object = 'c' . $i;
                 $card = [
-                    'val' => (int)$play->$object[0] != 0 ? (int)$play->$object[0] : $this->getValue($play->$object[0]),
-                    'flush' => $play->$object[1]];
+                    'val' => (int)$hand->$object[0] != 0 ? (int)$hand->$object[0] : $this->getValue($hand->$object[0]),
+                    'flush' => $hand->$object[1]];
                 $h[] = $card;
             }
+            $h['hand_id'] = $hand->id;
             $this->round[] = $h;
         }
         return $this->round;
@@ -53,29 +52,30 @@ class Round extends Controller
             $flush = array_count_values(array_column($singleHand, 'flush'));
             $values = array_count_values(array_column($singleHand, 'val'));
             arsort($values);
-            $score[] = $this->getResult($flush, $values, array_keys($values));
+            $score[] = $this->getResult($flush, $values, array_keys($values), $singleHand['hand_id']);
         }
         return $score;
     }
 
     /**
-     * Getting the score
+     *  Getting the score
      *
      * @param $flush
      * @param $values
      * @param $keys
+     * @param $hand_id
      * @return array
      */
-    function getResult($flush, $values, $keys)
+    function getResult($flush, $values, $keys, $hand_id)
     {
         $checkResult = new \App\Http\Controllers\PossibleResult();
         foreach ($checkResult->results as $result) {
-            $params=['flush'=> $flush,  'values'=>$values, 'keys'=> $keys];
+            $params = ['flush' => $flush, 'values' => $values, 'keys' => $keys];
             if (call_user_func_array([$checkResult, $result['function']], [$params])) {
-                return ['score' => $result['score'], 'cards' => $keys];
+                return ['score' => $result['score'], 'flush' => $flush, 'cards' => $keys, 'hand' => $hand_id];
             }
         }
-        $this->handleError();
+        return $this->handleError();
     }
 
     /**

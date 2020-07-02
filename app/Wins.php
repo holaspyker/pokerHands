@@ -19,19 +19,19 @@ class Wins extends Model
     }
 
     /**
-     * Save the model wins in the database
-     *
-     * @param $player
+     * @param $player_id
      * @param $index
      * @param $max
      * @param $score
+     * @param $hand
      */
-    function  saveWins($player_id , $index ,$max , $score)
+    function saveWins($player, $round, $max, $score, $hand)
     {
-        $this->player = $player_id;
-        $this->round_id = $index;
+        $this->player = $player;
+        $this->round_id = $round;
         $this->score = $max;
         $this->all_hands = json_encode($score);//Saving all hands
+        $this->hand_id = $hand;
         $this->save();
     }
 }

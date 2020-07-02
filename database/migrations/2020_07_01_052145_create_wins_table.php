@@ -19,6 +19,8 @@ class CreateWinsTable extends Migration
             $table->integer('round_id');
             $table->string('all_hands');
             $table->string('score');
+            $table->integer('hand_id');
+
             $table->index('player');
             $table->timestamps();
         });

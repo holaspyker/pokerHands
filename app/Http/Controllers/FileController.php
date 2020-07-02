@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Cards;
 use App\Hands;
-use App\Wins;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -27,13 +25,13 @@ class FileController extends Controller
     }
 
     /**
-     * Read the round and split the round in each player
+     * Read the round, and get the value of the cards
      *
      * @param $rounds
      */
     function readRounds($rounds)
     {
-        for ($i = 0; $i < count($rounds); $i++) {
+        for ($i = 1; $i < count($rounds); $i++) {
             $hand = explode(" ", $rounds[$i]);
             $this->parseRound($hand, $i);
         }

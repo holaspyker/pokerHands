@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 
 class PossibleResult extends Controller
 {
@@ -163,10 +162,10 @@ class PossibleResult extends Controller
     }
 
     /**
-     * handle if the two players has the same score
+     * Getting what palyer wins with the same score;
      *
      * @param $players
-     * @return int|string
+     * @return array|int|int[]|string
      */
     public function handleTieBreak($players)
     {
@@ -177,7 +176,7 @@ class PossibleResult extends Controller
                 break;
             case 2 :
             case 6 :
-            case 8:
+            case 8 :
                 $win = $this->hasImportantCards(1, $players);
                 break;
             case 1 :
@@ -196,13 +195,13 @@ class PossibleResult extends Controller
      *
      * @param $slice
      * @param $players
-     * @return int|string
+     * @return int
      */
     function hasImportantCards($slice, $players)
     {
-        $win = -1;
         $cards = array_column($players, 'cards');
         $max = 0;
+        $win = [];
         try {
             foreach ($cards as $player => $item) {
                 $import = $slice > 0 ? array_slice($item, 0, $slice) : $item;
