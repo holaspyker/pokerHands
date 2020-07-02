@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+
+namespace App\Repository;
+
 
 use App\Hands;
 
-class Round extends Controller
+class Round
 {
 
     private $round = [];
+
     /**
      * Using the construct to build the round
      * Round constructor.
@@ -27,7 +30,6 @@ class Round extends Controller
             $h['hand_id'] = $hand->id;
             $this->round[] = $h;
         }
-        return $this->round;
     }
 
     /**
@@ -68,10 +70,12 @@ class Round extends Controller
      */
     function getResult($flush, $values, $keys, $hand_id)
     {
-        $checkResult = new \App\Http\Controllers\PossibleResult();
-        foreach ($checkResult->results as $result) {
+        $results = \App\PossibleResult::getPossibleResult();;
+        foreach ($results as $result) {
             $params = ['flush' => $flush, 'values' => $values, 'keys' => $keys];
-            if (call_user_func_array([$checkResult, $result['function']], [$params])) {
+            $checkResult = new Result($flush, $values, $keys);
+
+            if (call_user_func_array([$checkResult, $result['function']], [])) {
                 return ['score' => $result['score'], 'flush' => $flush, 'cards' => $keys, 'hand' => $hand_id];
             }
         }
@@ -87,6 +91,3 @@ class Round extends Controller
         var_dump("Error!!!!");
     }
 }
-
-
-

@@ -10,7 +10,7 @@ class Hands extends Model
 
     /**
      *
-     * SAving  Hand model in DB
+     * Saving  Hand model in DB
      * @param $player
      * @param $index
      * @param $n_player

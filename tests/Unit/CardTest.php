@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Hands;
-use App\Http\Controllers\Round;
-use App\Http\Controllers\WinsController;
+use App\Repository\Round;
+use App\Repository\Win;
 use App\Wins;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -22,7 +22,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["TS", "JS", "QS", "KS", "AS"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 10);
+        $this->assertEquals(10, $score[0]['score']);
 
     }
 
@@ -31,7 +31,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["TS", "JS", "QS", "KS", "9S"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 9);
+        $this->assertEquals(9, $score[0]['score']);
     }
 
     public function testIsPoker()
@@ -39,7 +39,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["TS", "TC", "TH", "TD", "AD"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 8);
+        $this->assertEquals(8, $score[0]['score']);
     }
 
     public function testIsFullHouse()
@@ -47,7 +47,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["TS", "AC", "TH", "AD", "AD"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 7);
+        $this->assertEquals(7, $score[0]['score']);
     }
 
     public function testIsFlush()
@@ -55,7 +55,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["3S", "8S", "4S", "AS", "2S"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 6);
+        $this->assertEquals(6, $score[0]['score']);
     }
 
     public function testIsStraight()
@@ -63,7 +63,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["AS", "2S", "4S", "5S", "3D"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 5);
+        $this->assertEquals(5, $score[0]['score']);
     }
 
     public function testIsThree()
@@ -71,7 +71,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["4S", "JH", "TH", "JC", "JD"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 4);
+        $this->assertEquals(4, $score[0]['score']);
     }
 
     public function testIsTwoPairs()
@@ -79,7 +79,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["4S", "JC", "TH", "JC", "TD"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 3);
+        $this->assertEquals(3, $score[0]['score']);
     }
 
     public function testIsPair()
@@ -87,7 +87,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["9S", "JC", "TH", "KC", "TD"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 2);
+        $this->assertEquals(2, $score[0]['score']);
     }
 
     public function testHighCard()
@@ -95,7 +95,7 @@ class CardTest extends TestCase
         $this->truncate();
         $hand1 = ["9S", "2C", "TH", "KC", "AD"];
         $score = $this->helperTest($hand1);
-        $this->assertEquals($score[0]['score'], 1);
+        $this->assertEquals(1, $score[0]['score']);
     }
 
     public function testTiebreak()
@@ -105,8 +105,8 @@ class CardTest extends TestCase
         $hand2 = ["AS", "3D", "TS", "KS", "5D"];
         $index = 0;
         $score = $this->helperTest($hand1, $hand2);
-        $this->assertEquals($score[0]['score'], 1);
-        $this->assertEquals($score[1]['score'], 1);
+        $this->assertEquals(1, $score[0]['score']);
+        $this->assertEquals(1, $score[1]['score']);
         $won = $this->getWinner($score, $index);
         $this->assertEquals(1, $won);
     }
@@ -118,8 +118,8 @@ class CardTest extends TestCase
         $hand2 = ["AS", "5D", "AC", "5H", "4D"];
         $index = 0;
         $score = $this->helperTest($hand1, $hand2);
-        $this->assertEquals($score[0]['score'], 3);
-        $this->assertEquals($score[1]['score'], 3);
+        $this->assertEquals(3, $score[0]['score']);
+        $this->assertEquals(3, $score[1]['score']);
         $won = $this->getWinner($score, $index);
         $this->assertEquals(1, $won);
     }
@@ -131,8 +131,8 @@ class CardTest extends TestCase
         $hand2 = ["AS", "5D", "AC", "5H", "4D"];
         $index = 0;
         $score = $this->helperTest($hand1, $hand2);
-        $this->assertEquals($score[0]['score'], 3);
-        $this->assertEquals($score[1]['score'], 3);
+        $this->assertEquals(3, $score[0]['score']);
+        $this->assertEquals(3, $score[1]['score']);
         $won = $this->getWinner($score, $index);
         $this->assertEquals(0, $won);
     }
@@ -144,8 +144,8 @@ class CardTest extends TestCase
         $hand2 = ["7S", "7C", "7H", "7D", "AD"];;
         $index = 0;
         $score = $this->helperTest($hand1, $hand2);
-        $this->assertEquals($score[0]['score'], 10);
-        $this->assertEquals($score[1]['score'], 8);
+        $this->assertEquals(10, $score[0]['score']);
+        $this->assertEquals(8, $score[1]['score']);
         $won = $this->getWinner($score, $index);
         $this->assertEquals(0, $won);
     }
@@ -157,8 +157,8 @@ class CardTest extends TestCase
         $hand2 = ["TD", "AC", "TH", "AH", "AD"];
         $index = 0;
         $score = $this->helperTest($hand1, $hand2);
-        $this->assertEquals($score[0]['score'], 6);
-        $this->assertEquals($score[1]['score'], 7);
+        $this->assertEquals(6, $score[0]['score']);
+        $this->assertEquals(7, $score[1]['score']);
         $won = $this->getWinner($score, $index);
         $this->assertEquals(1, $won);
     }
@@ -181,14 +181,14 @@ class CardTest extends TestCase
             $handObject1 = new Hands();
             $round[$n_player1] = $handObject1->saveHand($hand2, $index, $n_player1);
         }
-        $roundController = new Round($round);
-        $score = $roundController->play();
+        $roundRepository = new Round($round);
+        $score = $roundRepository->play();
         return $score;
     }
 
     public function getWinner($score, $index)
     {
-        $winController = new WinsController();
+        $winController = new Win();
         $winController->handleScore($score, $index);
         $won = DB::table('wins')->select('player')->where('round_id', $index)->get();
         return $won[0]->player;

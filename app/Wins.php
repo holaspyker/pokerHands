@@ -19,8 +19,8 @@ class Wins extends Model
     }
 
     /**
-     * @param $player_id
-     * @param $index
+     * @param $player
+     * @param $round
      * @param $max
      * @param $score
      * @param $hand
@@ -34,4 +34,16 @@ class Wins extends Model
         $this->hand_id = $hand;
         $this->save();
     }
+
+    /**
+     * Relation one-to-one, wins->hand
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hand()
+    {
+        return $this->hasOne('App\Hand');
+    }
+
+
 }
